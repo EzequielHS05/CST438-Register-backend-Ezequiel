@@ -6,10 +6,10 @@
 
 #### GET /schedule?year={year}&semester={semester}
 - query parameters - year such as 2021,   semester such as Spring, Fall 
-- result - returned JSON.  see ScheduleDTO class    
+- result returned JSON for instance of java class ScheduleDTO.    
 
 #### POST /schedule 
-- body contains JSON see EnrollmentDTO
+- body contains JSON data for CourseDTO.  See java class ScheduleDTO.CourseDTO
 
 #### DELETE /schedule/{enrollment_id}  
 - enrollment_id from a course enrollment  See ScheduleDTO.CourseDTO.id 
