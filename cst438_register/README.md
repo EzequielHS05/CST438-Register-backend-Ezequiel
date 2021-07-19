@@ -1,4 +1,6 @@
-# Registration service - students can view their course schedule and add/drop courses 
+## CST438 Software Engineering California State University Monterey Bay
+## Registration service project
+### Users can view their course schedule and add/drop courses 
 
 ### REST apis  used by front end 
 
