@@ -11,7 +11,7 @@ import com.cst438.domain.EnrollmentDTO;
 import com.cst438.domain.EnrollmentRepository;
 
 
-public class GradebookServiceMQ implements GradebookService {
+public class GradebookServiceMQ extends GradebookService {
 	
 	@Autowired
 	RabbitTemplate rabbitTemplate;

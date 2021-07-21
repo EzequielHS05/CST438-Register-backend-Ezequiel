@@ -6,7 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import com.cst438.domain.EnrollmentDTO;
 
 
-public class GradebookServiceREST  implements GradebookService {
+public class GradebookServiceREST extends GradebookService {
 
 	private RestTemplate restTemplate = new RestTemplate();
 
