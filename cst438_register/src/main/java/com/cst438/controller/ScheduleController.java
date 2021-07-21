@@ -48,7 +48,8 @@ public class ScheduleController {
 	@GetMapping("/schedule")
 	public ScheduleDTO getSchedule( @RequestParam("year") int year, @RequestParam("semester") String semester ) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String student_email =  authentication.getName();  // user name (should be student's email)
+		
+		String student_email = (authentication==null) ? "test@csumb.edu" :  authentication.getName();  // user name (should be student's email) 
 		
 		Student student = studentRepository.findByEmail(student_email);
 		if (student != null) {
@@ -99,7 +100,8 @@ public class ScheduleController {
 	public void dropCourse(  @PathVariable int enrollment_id  ) {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String student_email =  authentication.getName();  // user name (should be student's email)
+		
+		String student_email = (authentication==null) ? "test@csumb.edu" :  authentication.getName();  // user name (should be student's email)
 		
 		// TODO  check that today's date is not past deadline to drop course.
 		
