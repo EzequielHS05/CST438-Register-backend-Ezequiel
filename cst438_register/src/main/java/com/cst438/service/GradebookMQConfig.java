@@ -1,8 +1,5 @@
 package com.cst438.service;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -19,20 +16,17 @@ import org.springframework.messaging.handler.annotation.support.DefaultMessageHa
 @ConditionalOnProperty(prefix = "gradebook", name = "service", havingValue = "MQ")
 public class GradebookMQConfig  implements RabbitListenerConfigurer{
 	
-	@Bean
-	public FanoutExchange gradebookExchange() {
-		return new FanoutExchange("registration-exchange");
-	}
 
 	@Bean
 	public Queue gradebookQueue() {
+		return new Queue("gradebook-queue", true);
+	}
+	
+	@Bean
+	public Queue registrationQueue() {
 		return new Queue("registration-queue", true);
 	}
 
-	@Bean
-	public Binding binding(FanoutExchange registrationExchange, Queue registrationQueue) {
-		return BindingBuilder.bind(registrationQueue).to(registrationExchange);
-	}
 	
 	// converter rabbit template to convert objects to JSON 
 	@Bean

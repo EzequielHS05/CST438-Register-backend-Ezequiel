@@ -26,7 +26,7 @@ import com.cst438.service.GradebookServiceMQ;
 import com.cst438.service.GradebookServiceREST;
 
 @SpringBootApplication
-//@EnableWebSecurity
+@EnableWebSecurity
 public class Cst4380wRegistrationApplication extends WebSecurityConfigurerAdapter {
 
 	public static void main(String[] args) {
@@ -43,10 +43,9 @@ public class Cst4380wRegistrationApplication extends WebSecurityConfigurerAdapte
  		http.csrf().disable().cors(); 		
  		
  		// permit requests to /course without authentication. All other URLS are authenticated
-// 		http.authorizeRequests().mvcMatchers(HttpMethod.PUT, "/course").permitAll();
+ 		http.authorizeRequests().mvcMatchers(HttpMethod.PUT, "/course").permitAll();
 
- 		// for unit testing
- 		http.authorizeRequests().anyRequest().permitAll();
+
 	}
 	
 	@Bean
@@ -86,8 +85,14 @@ public class Cst4380wRegistrationApplication extends WebSecurityConfigurerAdapte
 	
 	@Bean(name = "GradebookService")
 	@ConditionalOnProperty(prefix = "gradebook", name = "service", havingValue = "REST")
-	public GradebookService GradebookServiceREST() {
+	public GradebookService gradebookServiceREST() {
 		return new GradebookServiceREST();
+	}
+	
+	@Bean(name = "GradebookService")
+	@ConditionalOnProperty(prefix="gradebook", name="service", havingValue = "default")
+	public GradebookService gradebookDefault() {
+		return new GradebookService();
 	}
 
 }
