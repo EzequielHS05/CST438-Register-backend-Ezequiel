@@ -5,6 +5,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cst438.domain.CourseDTOG;
 import com.cst438.domain.Enrollment;
@@ -37,6 +38,7 @@ public class GradebookServiceMQ extends GradebookService {
 	}
 	
 	@RabbitListener(queues = "registration-queue")
+	@Transactional
 	public void receive(CourseDTOG courseDTOG) {
 		
 		//TODO  complete this method in homework 4
