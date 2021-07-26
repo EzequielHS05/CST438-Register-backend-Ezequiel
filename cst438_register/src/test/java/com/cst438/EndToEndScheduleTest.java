@@ -1,7 +1,9 @@
 package com.cst438;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,7 @@ import com.cst438.domain.EnrollmentRepository;
  */
 
 @SpringBootTest
-public class EndToEndTestSelenium {
+public class EndToEndScheduleTest {
 
 	public static final String CHROME_DRIVER_FILE_LOCATION = "C:/chromedriver_win32/chromedriver.exe";
 
@@ -50,7 +52,7 @@ public class EndToEndTestSelenium {
 	CourseRepository courseRepository;
 
 	@Test
-	public void addCourseTest() throws InterruptedException {
+	public void addCourseTest() throws Exception {
 
 		Enrollment x = null;
 		do {
@@ -72,37 +74,48 @@ public class EndToEndTestSelenium {
 		// Puts an Implicit wait for 10 seconds before throwing exception
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-		driver.get(URL);
-		Thread.sleep(SLEEP_DURATION);
+		try {
 
-		WebElement we = driver.findElement(By.xpath("//label[normalize-space() = '" + TEST_SEMESTER + "']/input"));
-		we.click();
+			driver.get(URL);
+			Thread.sleep(SLEEP_DURATION);
 
-		// Locate and click Schedule button
-		driver.findElement(By.xpath("//a")).click();
-		Thread.sleep(SLEEP_DURATION);
+			// select the last of the radio buttons 
+			WebElement we = driver.findElement(By.xpath("(//input[@type='radio'])[last()]"));
+			we.click();
 
-		// Locate and click Add Course button
-		driver.findElement(By.xpath("//button")).click();
-		Thread.sleep(SLEEP_DURATION);
+			// Locate and click "Get Schedule" button
+			driver.findElement(By.xpath("//a")).click();
+			Thread.sleep(SLEEP_DURATION);
 
-		// enter course no 40442 and click Add
-		driver.findElement(By.xpath("//input[@name='course_id']")).sendKeys(Integer.toString(TEST_COURSE_ID));
-		driver.findElement(By.xpath("//button[span='Add']")).click();
-		Thread.sleep(SLEEP_DURATION);
+			// Locate and click "Add Course" button
+			driver.findElement(By.xpath("//button")).click();
+			Thread.sleep(SLEEP_DURATION);
 
-		// verify that new course shows in schedule.
-		Course course = courseRepository.findById(TEST_COURSE_ID).get();
-		we = driver.findElement(By.xpath("//div[@data-field='title' and @data-value='" + course.getTitle() + "']"));
+			// enter course no 40442 and click "Add"
+			driver.findElement(By.xpath("//input[@name='course_id']")).sendKeys(Integer.toString(TEST_COURSE_ID));
+			driver.findElement(By.xpath("//button[span='Add']")).click();
+			Thread.sleep(SLEEP_DURATION);
 
-		// verify that enrollment row has been inserted to database.
-		Enrollment e = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
-		assertNotNull(e, "Course enrollment not found in database.");
+			// verify that new course shows in schedule.
+			Course course = courseRepository.findById(TEST_COURSE_ID).get();
+			we = driver.findElement(By.xpath("//div[@data-field='title' and @data-value='" + course.getTitle() + "']"));
+			assertNotNull(we, "Added course does not show in schedule.");
 
-		// clean up database.
-		enrollmentRepository.delete(e);
+			// verify that enrollment row has been inserted to database.
+			Enrollment e = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
+			assertNotNull(e, "Course enrollment not found in database.");
 
-		driver.quit();
+		} catch (Exception ex) {
+			throw ex;
+		} finally {
+
+			// clean up database.
+			Enrollment e = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
+			if (e != null)
+				enrollmentRepository.delete(e);
+
+			driver.quit();
+		}
 
 	}
 }

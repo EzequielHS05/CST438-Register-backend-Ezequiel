@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,9 +46,8 @@ public class ScheduleController {
 	 */
 	@GetMapping("/schedule")
 	public ScheduleDTO getSchedule( @RequestParam("year") int year, @RequestParam("semester") String semester ) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
-		String student_email = (authentication==null) ? "test@csumb.edu" :  authentication.getName();  // user name (should be student's email) 
+		String student_email = "test@csumb.edu";   // student's email 
 		
 		Student student = studentRepository.findByEmail(student_email);
 		if (student != null) {
@@ -67,20 +64,18 @@ public class ScheduleController {
 	@PostMapping("/schedule")
 	@Transactional
 	public ScheduleDTO.CourseDTO addCourse( @RequestBody ScheduleDTO.CourseDTO courseDTO  ) { 
-		// look up student and course
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
-		String student_email = (authentication==null) ? "test@csumb.edu" :  authentication.getName();  // user name (should be student's email)
-		
+		String student_email = "test@csumb.edu";   // student's email 
 		
 		Student student = studentRepository.findByEmail(student_email);
 		Course course  = courseRepository.findByCourse_id(courseDTO.course_id);
 		
-		// a status code of 0, means student can register for courses.  
-		// status not equal 0, means there is a HOLD on student registration.
+		// student.status
+		// = 0  ok to register
+		// != 0 hold on registration.  student.status may have reason for hold.
 		
 		if (student!= null && course!=null && student.getStatusCode()==0) {
-			// TODO check that today's date is not past add deadline.
+			// TODO check that today's date is not past add deadline for the course.
 			Enrollment enrollment = new Enrollment();
 			enrollment.setStudent(student);
 			enrollment.setCourse(course);
@@ -102,9 +97,7 @@ public class ScheduleController {
 	@Transactional
 	public void dropCourse(  @PathVariable int enrollment_id  ) {
 		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		String student_email = (authentication==null) ? "test@csumb.edu" :  authentication.getName();  // user name (should be student's email)
+		String student_email = "test@csumb.edu";   // student's email 
 		
 		// TODO  check that today's date is not past deadline to drop course.
 		

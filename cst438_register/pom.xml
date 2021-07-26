@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cst438</groupId>
-	<artifactId>cst438_0wOauth</artifactId>
+	<artifactId>cst438_0</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>cst438_0wOauth</name>
-	<description>oauth2</description>
+	<name>cst438_0</name>
+	<description>Course Schedule Project</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -29,37 +29,28 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>js-cookie</artifactId>
-			<version>2.1.0</version>
+   		 	<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-devtools</artifactId>
+    		<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery</artifactId>
-			<version>2.1.1</version>
+  			<groupId>org.springframework.boot</groupId>
+  			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>3.2.0</version>
+		  	<groupId>org.springframework.security</groupId>
+		  	<artifactId>spring-security-test</artifactId>
+		  	<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>webjars-locator-core</artifactId>
-		</dependency>
+		
 		<!-- for rabbitmq -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -71,11 +62,13 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- end rabbitmq -->
+		
 		<dependency>
 			<groupId>org.sikuli</groupId>
 			<artifactId>sikuli-api</artifactId>
 			<version>1.2.0</version>
 		</dependency>
+		
 		<!-- for selenium -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -93,6 +86,7 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- end selenium -->
+		
 	</dependencies>
 
 	<build>
