@@ -35,7 +35,7 @@ public class ScheduleDTO {
 	@Override
 	public String toString() {
 		return "ScheduleDTO [student_email=" + student_email + ", student_id=" + student_id + ", year=" + year
-				+ ", semester=" + semester + ", courses=" + courses + "]";
+				+ ", semester=" + semester + ", courses=[" + courses + "] ]";
 	}
 
 }
