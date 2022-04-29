@@ -10,12 +10,12 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cst438</groupId>
-	<artifactId>cst438_0</artifactId>
+	<artifactId>cst438_register</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cst438_0</name>
 	<description>Course Schedule Project</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

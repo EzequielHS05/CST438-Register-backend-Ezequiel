@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,7 @@ public class JunitTestSchedule {
 		course.setSemester(TEST_SEMESTER);
 		course.setYear(TEST_YEAR);	
 		
+		
 		// sets the start and end date of the course
 		Calendar c = Calendar.getInstance();
 		c.set(2021,  8,  16);
@@ -110,7 +112,7 @@ public class JunitTestSchedule {
 		enrollments.add(enrollment);
 		
 		// given  -- stubs for database repositories that return test data
-	    given(courseRepository.findByCourse_id(TEST_COURSE_ID)).willReturn(course);
+	    given(courseRepository.findById(TEST_COURSE_ID)).willReturn(Optional.of(course));
 	    given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
 	    given(enrollmentRepository.save(any(Enrollment.class))).willReturn(enrollment);
 	    given(enrollmentRepository.findStudentSchedule(TEST_STUDENT_EMAIL, TEST_YEAR, TEST_SEMESTER)).willReturn(enrollments);
@@ -194,7 +196,7 @@ public class JunitTestSchedule {
 		enrollment.setYear(TEST_YEAR);
 	
 		// given  -- stubs for database repositories that return test data
-	    given(enrollmentRepository.findById(1)).willReturn(enrollment);
+	    given(enrollmentRepository.findById(1)).willReturn(Optional.of(enrollment));
 	    // note:  it is not necessary to create a mock for enrollmentRepository.delete.
 	    //   Because it is a method that has a void return type, Mockito will mock it automatically.
 	  

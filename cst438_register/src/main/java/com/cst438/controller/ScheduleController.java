@@ -48,15 +48,17 @@ public class ScheduleController {
 	 */
 	@GetMapping("/schedule")
 	public ScheduleDTO getSchedule( @RequestParam("year") int year, @RequestParam("semester") String semester ) {
-		
+		System.out.println("/schedule called.");
 		String student_email = "test@csumb.edu";   // student's email 
 		
 		Student student = studentRepository.findByEmail(student_email);
 		if (student != null) {
+			System.out.println("/schedule student "+student.getName()+" "+student.getStudent_id());
 			List<Enrollment> enrollments = enrollmentRepository.findStudentSchedule(student_email, year, semester);
 			ScheduleDTO sched = createSchedule(year, semester, student, enrollments);
 			return sched;
 		} else {
+			System.out.println("/schedule student not found. "+student_email);
 			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Student not found. " );
 		}
 	}
@@ -66,11 +68,11 @@ public class ScheduleController {
 	@PostMapping("/schedule")
 	@Transactional
 	public ScheduleDTO.CourseDTO addCourse( @RequestBody ScheduleDTO.CourseDTO courseDTO  ) { 
-		
+
 		String student_email = "test@csumb.edu";   // student's email 
 		
 		Student student = studentRepository.findByEmail(student_email);
-		Course course  = courseRepository.findByCourse_id(courseDTO.course_id);
+		Course course  = courseRepository.findById(courseDTO.course_id).orElse(null);
 		
 		// student.status
 		// = 0  ok to register
@@ -103,7 +105,7 @@ public class ScheduleController {
 		
 		// TODO  check that today's date is not past deadline to drop course.
 		
-		Enrollment enrollment = enrollmentRepository.findById(enrollment_id);
+		Enrollment enrollment = enrollmentRepository.findById(enrollment_id).orElse(null);
 		
 		// verify that student is enrolled in the course.
 		if (enrollment!=null && enrollment.getStudent().getEmail().equals(student_email)) {

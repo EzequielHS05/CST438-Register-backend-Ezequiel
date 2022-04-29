@@ -70,9 +70,5 @@ public class Enrollment {
 		return "Enrollment [enrollment_id=" + enrollment_id + ", student=" + student.getEmail() + ", course=" + course.getCourse_id() + ", year="
 				+ year + ", semester=" + semester + ", courseGrade=" + courseGrade + "]";
 	}
-	
-	
 
-	
-	
 }
