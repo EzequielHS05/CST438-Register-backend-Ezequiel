@@ -1,8 +1,10 @@
 package com.cst438;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,10 @@ import com.cst438.domain.EnrollmentRepository;
  *  - Input fields are located and sendKeys( ) method is used to enter test data.
  *  - Spring Boot JPA is used to initialize, verify and reset the database before
  *      and after testing.
+ *      
+ *    Make sure that TEST_COURSE_ID is a valid course for TEST_SEMESTER.
+ *    
+ *    URL is the server on which Node.js is running.
  */
 
 @SpringBootTest
@@ -38,21 +44,34 @@ public class EndToEndScheduleTest {
 
 	public static final String TEST_USER_EMAIL = "test@csumb.edu";
 
-	public static final int TEST_COURSE_ID = 40442;
+	public static final int TEST_COURSE_ID = 40443; 
 
 	public static final String TEST_SEMESTER = "2021 Fall";
 
 	public static final int SLEEP_DURATION = 1000; // 1 second.
 
+	/*
+	 * When running in @SpringBootTest environment, database repositories can be used
+	 * with the actual database.
+	 */
+	
 	@Autowired
 	EnrollmentRepository enrollmentRepository;
 
 	@Autowired
 	CourseRepository courseRepository;
 
+	/*
+	 * Student add course TEST_COURSE_ID to schedule for 2021 Fall semester.
+	 */
+	
 	@Test
 	public void addCourseTest() throws Exception {
 
+		/*
+		 * if student is already enrolled, then delete the enrollment.
+		 */
+		
 		Enrollment x = null;
 		do {
 			x = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
@@ -78,29 +97,46 @@ public class EndToEndScheduleTest {
 			driver.get(URL);
 			Thread.sleep(SLEEP_DURATION);
 
-			// select the last of the radio buttons 
+			// select the last of the radio buttons on the list of semesters page.
+			
 			WebElement we = driver.findElement(By.xpath("(//input[@type='radio'])[last()]"));
 			we.click();
 
 			// Locate and click "Get Schedule" button
+			
 			driver.findElement(By.xpath("//a")).click();
 			Thread.sleep(SLEEP_DURATION);
 
-			// Locate and click "Add Course" button
+			// Locate and click "Add Course" button which is the first and only button on the page.
 			driver.findElement(By.xpath("//button")).click();
 			Thread.sleep(SLEEP_DURATION);
 
-			// enter course no 40442 and click "Add"
+			// enter course no and click Add button
+			
 			driver.findElement(By.xpath("//input[@name='course_id']")).sendKeys(Integer.toString(TEST_COURSE_ID));
-			driver.findElement(By.xpath("//button[span='Add']")).click();
+			driver.findElement(By.xpath("//button[@id='Add']")).click();
 			Thread.sleep(SLEEP_DURATION);
 
-			// verify that new course shows in schedule.
+			/*
+			* verify that new course shows in schedule.
+			* get the title of all courses listed in schedule
+			*/ 
+		
 			Course course = courseRepository.findById(TEST_COURSE_ID).get();
-			we = driver.findElement(By.xpath("//div[@data-field='title' and @data-value='" + course.getTitle() + "']"));
-			assertNotNull(we, "Added course does not show in schedule.");
-
+			
+			List<WebElement> elements  = driver.findElements(By.xpath("//div[@data-field='title']/div[@class='MuiDataGrid-cellContent']"));
+			boolean found = false;
+			for (WebElement e : elements) {
+				System.out.println(e.getText()); // for debug
+				if (e.getText().equals(course.getTitle())) {
+					found=true;
+					break;
+				}
+			}
+			assertTrue( found, "Course added but not listed in schedule.");
+			
 			// verify that enrollment row has been inserted to database.
+			
 			Enrollment e = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
 			assertNotNull(e, "Course enrollment not found in database.");
 
@@ -109,6 +145,7 @@ public class EndToEndScheduleTest {
 		} finally {
 
 			// clean up database.
+			
 			Enrollment e = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
 			if (e != null)
 				enrollmentRepository.delete(e);
