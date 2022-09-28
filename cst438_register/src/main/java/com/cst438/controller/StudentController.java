@@ -2,6 +2,8 @@ package com.cst438.controller;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +49,7 @@ public class StudentController {
 	}
 	
 	@PostMapping("/student")
+	@Transactional
 	public StudentDTO addNewStudent(@RequestBody StudentDTO student) {
 		
 		Student check = studentRepository.findByEmail(student.student_email);
