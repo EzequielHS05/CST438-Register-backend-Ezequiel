@@ -66,7 +66,6 @@ public class JunitTestAddStudent {
 		studentDTO.id = 1;
 		studentDTO.student_email = TEST_STUDENT_EMAIL;
 		studentDTO.student_name = TEST_STUDENT_NAME;
-		studentDTO.status_code = 0;
 		response = mvc.perform(
 				MockMvcRequestBuilders
 			      .post("/student")
@@ -74,7 +73,11 @@ public class JunitTestAddStudent {
 			      .contentType(MediaType.APPLICATION_JSON)
 			      .accept(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
-		assertEquals(200, response.getStatus());		
+		assertEquals(200, response.getStatus());
+		
+		StudentDTO result = fromJsonString(response.getContentAsString(), StudentDTO.class);
+		assertNotEquals(0, result.id);
+		
 	}
 	
 	@Test
@@ -85,10 +88,9 @@ public class JunitTestAddStudent {
 		s1.setEmail(TEST_STUDENT_EMAIL);
 		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(s1);
 		StudentDTO studentDTO = new StudentDTO();
-		studentDTO.id = 0;
+
 		studentDTO.student_email = TEST_STUDENT_EMAIL;
 		studentDTO.student_name = TEST_STUDENT_NAME;
-		studentDTO.status_code = 0;
 		
 		response = mvc.perform(
 				MockMvcRequestBuilders
@@ -98,10 +100,33 @@ public class JunitTestAddStudent {
 			      .accept(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
 		assertEquals(400, response.getStatus());
+	
 	}
 	
 	@Test
-	public void changeStatus() {
+	public void changeStatus() throws Exception {
+		MockHttpServletResponse response;
+		//trying to add with same email
+		Student s1 = new Student();
+		s1.setEmail(TEST_STUDENT_EMAIL);
+		s1.setName(TEST_STUDENT_NAME);
+		s1.setStudent_id(1);
+		s1.setStatus("Hold");
+		s1.setStatusCode(1);
+		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(s1);
+		StudentDTO studentDTO = new StudentDTO();
+
+		
+		response = mvc.perform(
+				MockMvcRequestBuilders
+			      .put("/student/"+TEST_STUDENT_EMAIL)
+			      .content(asJsonString(studentDTO))
+			      .contentType(MediaType.APPLICATION_JSON)
+			      .accept(MediaType.APPLICATION_JSON))
+				.andReturn().getResponse();
+		assertEquals(200, response.getStatus());
+		
+		verify(studentRepository).save(any(Student.class));
 		
 	}
 	
