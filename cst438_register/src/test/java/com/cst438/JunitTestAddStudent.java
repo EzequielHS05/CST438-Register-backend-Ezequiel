@@ -106,7 +106,7 @@ public class JunitTestAddStudent {
 	@Test
 	public void changeStatus() throws Exception {
 		MockHttpServletResponse response;
-		//trying to add with same email
+		//changing status
 		Student s1 = new Student();
 		s1.setEmail(TEST_STUDENT_EMAIL);
 		s1.setName(TEST_STUDENT_NAME);
