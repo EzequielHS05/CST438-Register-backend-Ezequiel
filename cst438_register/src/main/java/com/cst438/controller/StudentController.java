@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,22 +28,23 @@ import com.cst438.domain.StudentRepository;
 import com.cst438.service.GradebookService;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class StudentController {
 	
 	@Autowired
 	StudentRepository studentRepository;
 
 	@GetMapping("/student")
-	public StudentDTO getStudent(@RequestParam("student_email") String student_email) {
+	public StudentDTO getStudent(@RequestParam("student_id") int student_id) {
 		System.out.println("/student");
-		Student find = studentRepository.findByEmail(student_email);
+		Student find = studentRepository.findById(student_id).orElse(null);
 		if (find != null) {
 			System.out.println("/schedule student "+ find.getName()+" "+find.getStudent_id());
 			
 			StudentDTO s = createStudentDTO(find);
 			return s;
 		} else {
-			System.out.println("/schedule student not found. "+student_email);
+			System.out.println("/schedule student not found. "+student_id);
 			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Student not found. " );
 		}
 		
@@ -69,9 +71,9 @@ public class StudentController {
 		}
 	}
 	
-	@PutMapping("/student/{student_email}")
-	public void updateStudentStatus(@RequestBody StudentDTO student, @PathVariable String student_email) {
-		Student checkIfAvailable = studentRepository.findByEmail(student_email);
+	@PutMapping("/student/{id}")
+	public void updateStudentStatus(@RequestBody StudentDTO student, @PathVariable int student_id) {
+		Student checkIfAvailable = studentRepository.findById(student_id).orElse(null);
 		if (checkIfAvailable != null) {
 			//updating student status
 			checkIfAvailable.setStatus(student.status);
@@ -80,7 +82,7 @@ public class StudentController {
 			
 		} else {
 			// Student not found 
-			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Invalid student email. "+ student_email);
+			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Invalid student ID. "+ student_id);
 		}
 	}
 	
