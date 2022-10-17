@@ -55,6 +55,4 @@ public class GradebookServiceMQ extends GradebookService {
 			System.out.println("Student Email: " + grade.student_email + " Course ID: " + courseDTOG.course_id + " Grade: " + grade.grade);
 		}
 	}
-	
-
 }
