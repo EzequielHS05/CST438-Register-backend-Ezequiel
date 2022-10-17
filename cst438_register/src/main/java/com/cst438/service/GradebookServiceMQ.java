@@ -45,7 +45,6 @@ public class GradebookServiceMQ extends GradebookService {
 	@RabbitListener(queues = "registration-queue")
 	public void receive(CourseDTOG courseDTOG) {
 		System.out.println("Receive enrollment :" + courseDTOG);
-
 		//TODO 
 		// for each student grade in courseDTOG,  find the student enrollment entity, update the grade and save back to enrollmentRepository.
 		for(CourseDTOG.GradeDTO grade : courseDTOG.grades){
