@@ -35,6 +35,8 @@ public class GradebookServiceMQ extends GradebookService {
 		 
 		// TODO 
 		// create EnrollmentDTO and send to gradebookQueue
+		EnrollmentDTO enrollmentDTO = new EnrollmentDTO(student_email, student_name, course_id);
+		rabbitTemplate.convertAndSend(gradebookQueue.getName(), enrollmentDTO);
 		
 		System.out.println("Message send to gradbook service for student "+ student_email +" " + course_id);  
 		
@@ -43,9 +45,13 @@ public class GradebookServiceMQ extends GradebookService {
 	@RabbitListener(queues = "registration-queue")
 	public void receive(CourseDTOG courseDTOG) {
 		System.out.println("Receive enrollment :" + courseDTOG);
-
 		//TODO 
 		// for each student grade in courseDTOG,  find the student enrollment entity, update the grade and save back to enrollmentRepository.
+		for(CourseDTOG.GradeDTO grade : courseDTOG.grades){
+			Enrollment enrollment = enrollmentRepository.findByEmailAndCourseId(grade.student_email, courseDTOG.course_id);
+			enrollment.setCourseGrade(grade.grade);
+			enrollmentRepository.save(enrollment);
+			System.out.println("Student Email: " + grade.student_email + " Course ID: " + courseDTOG.course_id + " Grade: " + grade.grade);
+		}
 	}
-
 }
