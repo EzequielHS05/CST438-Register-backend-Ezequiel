@@ -16,16 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.cst438.domain.Course;
-import com.cst438.domain.CourseRepository;
-import com.cst438.domain.Enrollment;
-import com.cst438.domain.EnrollmentDTO;
-import com.cst438.domain.EnrollmentRepository;
-import com.cst438.domain.ScheduleDTO;
+
 import com.cst438.domain.Student;
 import com.cst438.domain.StudentDTO;
 import com.cst438.domain.StudentRepository;
-import com.cst438.service.GradebookService;
+
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:3000"})
@@ -61,11 +56,9 @@ public class StudentController {
 			registerStudent.setName(student.student_name);
 			registerStudent.setEmail(student.student_email);
 			registerStudent.setStatusCode(student.status_code);
-			
 			studentRepository.save(registerStudent);
 			StudentDTO result = createStudentDTO(registerStudent);
 			return result;
-			
 		} else {
 			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Email is already registered: .  " + student.student_email);
 		}
@@ -79,7 +72,6 @@ public class StudentController {
 			checkIfAvailable.setStatus(student.status);
 			checkIfAvailable.setStatusCode(student.status_code);
 			studentRepository.save(checkIfAvailable);
-			
 		} else {
 			// Student not found 
 			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Invalid student ID. "+ student_id);
